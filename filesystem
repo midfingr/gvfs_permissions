@@ -1,0 +1,28 @@
+#NTFS PERMISSIONS
+EDIT AS ROOT
+
+/usr/share/polkit-1/rules.d/10-drives.rules
+add:
+##########
+polkit.addRule(function(action, subject) {
+if (action.id.indexOf("org.freedesktop.udisks2.") == 0){ 
+       return polkit.Result.YES;
+   }
+}
+);
+
+INSTALL:
+ntfs-3g
+
+#DISABLE SUSPEND
+EDIT as root
+/etc/polkit-1/rules.d/10-disable-suspend.rules
+
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.login1.suspend" ||
+        action.id == "org.freedesktop.login1.suspend-multiple-sessions" ||
+        action.id == "org.freedesktop.login1.hibernate" ||
+        action.id == "org.freedesktop.login1.hibernate-multiple-sessions") {
+        return polkit.Result.NO;
+    }
+});
